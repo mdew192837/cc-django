@@ -37,6 +37,8 @@ class Player(models.Model):
     uscf_rating = models.IntegerField(blank=True, null=True)
     # Rating is mandatory, default 0
     rating = models.IntegerField(default=0)
+    # Number of games is mandatory, default 0
+    games_played = models.IntegerField(default=0)
 
     # Players can be made inactive
     is_active = models.BooleanField(default=True)

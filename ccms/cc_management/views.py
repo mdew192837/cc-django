@@ -54,3 +54,8 @@ def club_delete(request, pk, template_name="cc_management/clubs/club_confirm_del
         messages.warning(request, f"Club {club_name} deleted.")
         return redirect("club_list")
     return render(request, template_name, {"club": club})
+
+def club_players(request, pk, template_name="cc_management/clubs/club_players.html"):
+    club = get_object_or_404(Club, pk=pk)
+    players = club.player_set.all()
+    return render(request, template_name, {"club": club, "players": players})

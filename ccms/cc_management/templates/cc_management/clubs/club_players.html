@@ -1,0 +1,42 @@
+{% extends "cc_management/base.html" %}
+
+{% block content %}
+<h1>Players for {{ club.name }}</h1>
+
+{% if players %}
+<table class="table">
+    <thead>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Rating</th>
+        <th scope="col">ID</th>
+        <th scope="col"># of Games Played</th>
+        <th scope="col">Actions</th>
+    </thead>
+    <tbody>
+        {% for player in players %}
+            <tr>
+                <td>{{ player.first_name }}</td>
+                <td>{{ player.last_name }}</td>
+                <td>{{ player.rating }}</td>
+                <td>{{ player.id }}</td>
+                <td>{{ player.games_played }}</td>
+                <td>
+                    <!-- Note that these urls will need to be updated -->
+                    <a href="#" class="btn btn-info" role="button">View Player</a>
+                    <a href="#" class="btn btn-primary" role="button">Edit Player</a>
+                    <a href="#" class="btn btn-danger" role="button">Delete Player</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<p class="lead">No players found!</p>
+
+{% endif %}
+
+<a href="#" class="btn btn-success" role="button">Add a Player!</a>
+<a href="{% url 'club_list' %}" class="btn btn-primary" role="button">Back to Clubs</a>
+{% endblock content %}

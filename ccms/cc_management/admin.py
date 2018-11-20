@@ -4,7 +4,9 @@ from django.contrib import admin
 from .models import *
 
 # Register your models here.
-admin.site.register(Club)
+class ClubAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+admin.site.register(Club, ClubAdmin)
 admin.site.register(Club_Classifications)
 
 # Display all fields for player
