@@ -1,0 +1,12 @@
+{% extends "cc_management/base.html" %}
+
+{% block content %}
+<h1>Club Details</h1>
+
+<ul>
+    <li>Club Name: {{ club.name }}</li>
+    <li>Club ID: {{ club.id }}</li>
+</ul>
+
+<a href="{% url 'club_list' %}" class="btn btn-success" role="button">Back to Clubs!</a>
+{% endblock content %}
