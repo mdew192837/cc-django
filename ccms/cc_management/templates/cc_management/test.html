@@ -1,0 +1,15 @@
+{% extends "cc_management/base.html" %}
+{% block content %}
+    {% if classifications %}
+        <h1>Club Classifications</h1>
+        <ul>
+            {% for classification in classifications %}
+                <li>{{ classification.name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Currently no classifications!
+        </div>
+    {% endif %}
+{% endblock content %}
