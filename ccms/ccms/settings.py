@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_tables2',
     'crispy_forms',
     'cc_management.apps.CcManagementConfig',
     'django.contrib.admin',
@@ -127,3 +128,6 @@ STATIC_URL = '/static/'
 
 # Crispy Forms Settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Django Table Setting
+DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap4.html'

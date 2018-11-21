@@ -23,9 +23,9 @@
                 <td>{{ player.games_played }}</td>
                 <td>
                     <!-- Note that these urls will need to be updated -->
-                    <a href="#" class="btn btn-info" role="button">View Player</a>
-                    <a href="#" class="btn btn-primary" role="button">Edit Player</a>
-                    <a href="#" class="btn btn-danger" role="button">Delete Player</a>
+                    <a href="{% url 'player_view' player.id %}" class="btn btn-info" role="button">View Player</a>
+                    <a href="{% url 'player_edit' player.id %}" class="btn btn-primary" role="button">Edit Player</a>
+                    <a href="{% url 'player_delete' player.id %}" class="btn btn-danger" role="button">Delete Player</a>
                 </td>
             </tr>
         {% endfor %}

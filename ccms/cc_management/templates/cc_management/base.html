@@ -59,6 +59,18 @@
               </div>
             </li>
             <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="playerDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Player
+              </a>
+              <div class="dropdown-menu" aria-labelledby="playerDropdown">
+                <a class="dropdown-item" href="{% url 'player_create' %}">Create</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'player_list' %}">Read, Update, Delete</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'filter_players' %}">Filter All</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="batchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Batch
               </a>

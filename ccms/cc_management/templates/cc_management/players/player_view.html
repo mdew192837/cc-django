@@ -1,0 +1,33 @@
+{% extends "cc_management/base.html" %}
+
+{% block content %}
+<div class="row">
+    <h1>Player Details - {{player.first_name}} {{player.middle_name}} {{player.last_name}}</h1>
+</div>
+<div class="row">
+    <div class="card" style="width: 18rem">
+        <div class="card-header">
+            Personal Information
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Grade: {{player.grade}}</li>
+            <li class="list-group-item">Club: {{player.club_id}}</li>
+            <li class="list-group-item">Classification: {{player.classification}}</li>
+        </ul>
+    </div>
+    <div class="card" style="width: 18rem">
+        <div class="card-header">
+            Chess Details
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Rating: {{player.rating}}</li>
+            <li class="list-group-item">USCF ID: {{player.uscf_id}}</li>
+            <li class="list-group-item">USCF Rating: {{player.uscf_rating}}</li>
+        </ul>
+    </div>
+</div>
+<br>
+<div class="row">
+    <a href="{% url 'club_players' player.club_id.id %}" class="btn btn-success" role="button">Back to Players!</a>
+</div>
+{% endblock content %}

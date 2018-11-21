@@ -1,0 +1,43 @@
+{% extends "cc_management/base.html" %}
+
+{% block content %}
+<h1>Players</h1>
+
+<table class="table">
+    <thead>
+        <th scope="col">First Name</th>
+        <th scope="col">Middle Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Club</th>
+        <th scope="col">Classification</th>
+        <th scope="col">Rating</th>
+        <th scope="col"># of Games Played</th>
+        <th scope="col">UCSF ID</th>
+        <th scope="col">UCSF Rating</th>
+        <th scope="col">Is Active</th>
+        <th scope="col">Actions</th>
+    </thead>
+    <tbody>
+        {% for player in players %}
+            <tr>
+                <td>{{ player.first_name }}</td>
+                <td>{{ player.middle_name }}</td>
+                <td>{{ player.last_name }}</td>
+                <td>{{ player.club_id }}</td>
+                <td>{{ player.classification }}</td>
+                <td>{{ player.rating }}</td>
+                <td>{{ player.games_played }}</td>
+                <td>{{ player.uscf_id }}</td>
+                <td>{{ player.uscf_rating }}</td>
+                <td>{{ player.is_active }}</td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-info" role="button">View Player</a>
+                    <a href="{% url 'player_edit' player.id %}" class="btn btn-sm btn-primary" role="button">Edit Player</a>
+                    <a href="#" class="btn btn-sm btn-danger" role="button">Delete Player</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="#" class="btn btn-success" role="button">Add Player!</a>
+{% endblock content %}

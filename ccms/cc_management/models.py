@@ -18,7 +18,7 @@ class Club_Classifications(models.Model):
 # Player Model
 class Player(models.Model):
     # Club ID
-    club_id = models.ForeignKey(Club, on_delete=models.CASCADE)
+    club_id = models.ForeignKey(Club, on_delete=models.CASCADE, verbose_name="Club Name")
 
     # Classficiation, default is 1, which is pawns
     classification = models.ForeignKey(Club_Classifications, on_delete=models.CASCADE, default=1)
@@ -27,21 +27,21 @@ class Player(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    first_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100, verbose_name="First Name")
     # Middle Names are optional
-    middle_name = models.CharField(max_length=100, blank=True)
-    last_name = models.CharField(max_length=100)
+    middle_name = models.CharField(max_length=100, blank=True, verbose_name="Middle Name")
+    last_name = models.CharField(max_length=100, verbose_name="Last Name")
 
     # USCF is optional
-    uscf_id = models.IntegerField(blank=True, null=True)
-    uscf_rating = models.IntegerField(blank=True, null=True)
+    uscf_id = models.IntegerField(blank=True, null=True, verbose_name="USCF ID")
+    uscf_rating = models.IntegerField(blank=True, null=True, verbose_name="USCF Rating")
     # Rating is mandatory, default 0
-    rating = models.IntegerField(default=0)
+    rating = models.IntegerField(default=0, verbose_name="Club Rating")
     # Number of games is mandatory, default 0
-    games_played = models.IntegerField(default=0)
+    games_played = models.IntegerField(default=0, verbose_name="# of Games Played")
 
     # Players can be made inactive
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, verbose_name="Is Active?")
 
     # Grade is mandatory
     KINDERGARTEN = 0

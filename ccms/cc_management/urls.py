@@ -25,3 +25,13 @@ urlpatterns += [
     path('classifications/<int:pk>/edit', views.classification_edit, name='classification_edit'),
     path('classifications/<int:pk>/delete', views.classification_delete, name='classification_delete'),
 ]
+
+# Add the players CRUD and foreign relationship URLs
+urlpatterns += [
+    path('players/', views.player_list, name='player_list'),
+    path('players/<int:pk>', views.player_view, name='player_view'),
+    path('players/<int:pk>/edit', views.player_edit, name='player_edit'),
+    path('players/<int:pk>/delete', views.player_delete, name='player_delete'),
+    path('players/create', views.player_create, name='player_create'),
+    path('players/filter', views.filter_players, name='filter_players'),
+]
