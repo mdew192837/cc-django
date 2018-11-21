@@ -16,6 +16,9 @@ def update_uscf(sender, instance, raw, **kwargs):
 
     # Get the USCF ID
     uscf_id = instance.uscf_id
+    # Check to make sure it's the right length - 8 digits
+    if len(str(uscf_id)) != 8:
+        return
 
     # Check if it's currently being processed
     if hasattr(instance, '_rating_processed'):
@@ -25,11 +28,13 @@ def update_uscf(sender, instance, raw, **kwargs):
     session = HTMLSession()
     if uscf_id:
         response = session.get(BASE_URL + str(uscf_id))
-        if response:
+        try:
             rating_input = response.html.find("input[name=rating1]", first=True)
             rating_value_string = rating_input.attrs["value"]
             rating_value = int(rating_value_string[:rating_value_string.find("*")])
             instance.uscf_rating = rating_value
+        except:
+            return
 
     # Save the instance
     try:
