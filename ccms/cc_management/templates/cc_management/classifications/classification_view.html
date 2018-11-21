@@ -1,0 +1,12 @@
+{% extends "cc_management/base.html" %}
+
+{% block content %}
+<h1>Classification Details</h1>
+
+<ul>
+    <li>Classification Name: {{ classification.name }}</li>
+    <li>Classification ID: {{ classification.id }}</li>
+</ul>
+
+<a href="{% url 'classification_list' %}" class="btn btn-success" role="button">Back to Classifications!</a>
+{% endblock content %}

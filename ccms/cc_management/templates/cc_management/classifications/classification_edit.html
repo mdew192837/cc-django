@@ -1,0 +1,14 @@
+{% extends "cc_management/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1>Edit Classification</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input class="btn btn-success" type="submit" value = "Submit!"/>
+    <a href="{% url 'classification_list' %}" class="btn btn-danger" role="button">Cancel</a>
+</form>
+
+{% endblock content %}

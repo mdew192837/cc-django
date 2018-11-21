@@ -15,7 +15,6 @@
                 <td>{{ club.name }}</td>
                 <td>{{ club.id }}</td>
                 <td>
-                    <!-- Note that these urls will need to be updated -->
                     <a href="{% url 'club_players' club.id %}" class="btn btn-primary" role="button">View Players</a>
                     <a href="{% url 'club_delete' club.id %}" class="btn btn-danger" role="button">Delete Club</a>
                     <a href="{% url 'club_view' club.id %}" class="btn btn-sm btn-info" role="button">View Club</a>
@@ -26,5 +25,5 @@
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'club_create'%}" class="btn btn-success" role="button">Create Club!</a>
+<a href="{% url 'club_create' %}" class="btn btn-success" role="button">Create Club!</a>
 {% endblock content %}

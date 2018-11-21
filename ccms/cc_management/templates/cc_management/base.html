@@ -43,9 +43,19 @@
                 Club
               </a>
               <div class="dropdown-menu" aria-labelledby="clubDropdown">
-                <a class="dropdown-item" href="/clubs/create">Create</a>
+                <a class="dropdown-item" href="{% url 'club_create' %}">Create</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/clubs">Read, Update, Delete</a>
+                <a class="dropdown-item" href="{% url 'club_list' %}">Read, Update, Delete</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="classificationDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Classification
+              </a>
+              <div class="dropdown-menu" aria-labelledby="classificationDropdown">
+                <a class="dropdown-item" href="{% url 'classification_create' %}">Create</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'classification_list' %}">Read, Update, Delete</a>
               </div>
             </li>
             <li class="nav-item dropdown">

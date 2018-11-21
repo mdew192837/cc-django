@@ -20,7 +20,7 @@ class ClubForm(ModelForm):
         fields = ['name']
 
 def club_list(request, template_name="cc_management/clubs/club_list.html"):
-    clubs = Club.objects.all()
+    clubs = Club.objects.order_by('id')
     return render(request, template_name, {"clubs": clubs})
 
 def club_view(request, pk, template_name="cc_management/clubs/club_detail.html"):
@@ -59,3 +59,45 @@ def club_players(request, pk, template_name="cc_management/clubs/club_players.ht
     club = get_object_or_404(Club, pk=pk)
     players = club.player_set.all()
     return render(request, template_name, {"club": club, "players": players})
+
+# CRUD for Classifications
+class ClassificationForm(ModelForm):
+    class Meta:
+        model = Club_Classifications
+        fields = ['name']
+
+def classification_list(request, template_name="cc_management/classifications/classification_list.html"):
+    classifications_list = Club_Classifications.objects.order_by('id')
+    return render(request, template_name, {"classifications": classifications_list})
+
+def classification_view(request, pk, template_name="cc_management/classifications/classification_view.html"):
+    classification = get_object_or_404(Club_Classifications, pk=pk)
+    return render(request, template_name, {"classification": classification})
+
+def classification_create(request, template_name="cc_management/classifications/classification_create.html"):
+    form = ClassificationForm(request.POST or None)
+    if form.is_valid():
+        classification_name = form.cleaned_data.get("name")
+        form.save()
+        messages.success(request, f'Classification {classification_name} created!')
+        return redirect("classification_list")
+    return render(request, template_name, {"form": form})
+
+def classification_edit(request, pk, template_name="cc_management/classifications/classification_edit.html"):
+    classification = get_object_or_404(Club_Classifications, pk=pk)
+    form = ClassificationForm(request.POST or None, instance=classification)
+    if form.is_valid():
+        new_name = form.cleaned_data.get("name")
+        form.save()
+        messages.success(request, f'Classification name changed to {new_name}!')
+        return redirect("classification_list")
+    return render(request, template_name, {"form": form, "classification": classification})
+
+def classification_delete(request, pk, template_name="cc_management/classifications/classification_confirm_delete.html"):
+    classification = get_object_or_404(Club_Classifications, pk=pk)
+    if request.method == "POST":
+        classification_name = classification.name
+        classification.delete()
+        messages.warning(request, f"Classification {classification_name} deleted.")
+        return redirect("classification_list")
+    return render(request, template_name, {"classification": classification})

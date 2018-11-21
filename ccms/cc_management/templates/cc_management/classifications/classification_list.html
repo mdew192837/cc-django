@@ -1,0 +1,31 @@
+{% extends "cc_management/base.html" %}
+
+{% block content %}
+<h1>Classifications</h1>
+
+{% if classifications %}
+<table class="table">
+    <thead>
+        <th scope="col">Classification Name</th>
+        <th scope="col">Classification ID</th>
+        <th scope="col">Actions</th>
+    </thead>
+    <tbody>
+        {% for classification in classifications %}
+            <tr>
+                <td>{{ classification.name }}</td>
+                <td>{{ classification.id }}</td>
+                <td>
+                    <a href="{% url 'classification_view' classification.id %}" class="btn btn-sm btn-info" role="button">View Classification</a>
+                    <a href="{% url 'classification_edit' classification.id %}" class="btn btn-sm btn-primary" role="button">Edit Classification</a>
+                    <a href="{% url 'classification_delete' classification.id %}" class="btn btn-sm btn-danger" role="button">Delete Classification</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="lead">There are currently no classifications. Please create one!</p>
+{% endif %}
+<a href="{% url 'classification_create' %}" class="btn btn-success" role="button">Create Classification!</a>
+{% endblock content %}
