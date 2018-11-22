@@ -18,6 +18,32 @@
             Currently no games for {{ club.name }}!
         </div>
     {% endif %}
+    <!-- Only show the button if we have games to process -->
+    {% if needs_processing %}
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmProcessModal">
+            Process Games!
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="confirmProcessModal" tabindex="-1" role="dialog" aria-labelledby="confirmProcessModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmProcessModalLabel">Are you sure?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        This will process <strong>all</strong> unprocessed games for {{ club.name }} and update ratings for <strong>all</strong> players.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Close</button>
+                        <a href="{% url 'process_games' club.id %}" class="btn btn-primary" role="button">Process Games!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <a href="{% url 'game_create' club.id %}" class="btn btn-success" role="button">Create a Game!</a>
     <a href="{% url 'club_list' %}" class="btn btn-info" role="button">Back to Clubs!</a>
 {% endblock content %}

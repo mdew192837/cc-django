@@ -1,0 +1,45 @@
+Game ID                                          
+7                                                
+WHITE                                            
+WHITE WON                                        
+Black ID:  8                                     
+White ID:  9                                     
+White Rating Before:  600                        
+Black Rating Before:  500                        
+(603.5993500019712, 496.4006499980288)           
+White Rating After:  604                         
+Black Rating After:  496                         
+DIFFERENTIAL                                     
+{'black': -4, 'white': 4}                        
+Differentials                                    
+{"9": 4, "8": -4}                                
+Game ID                                          
+8                                                
+BLACK                                            
+BLACK WON                                        
+Black ID:  8                                     
+White ID:  10                                    
+Black Rating Before:  500                        
+White Rating Before:  700                        
+(507.5974692664796, 692.4025307335204)           
+Black Rating After:  508                         
+White Rating After:  692                         
+DIFFERENTIAL                                     
+{'black': 8, 'white': -8}                        
+Differentials                                    
+{"9": 4, "8": 4, "10": -8}                       
+Game ID                                          
+9                                                
+DRAW                                             
+DRAWN                                            
+Black ID:  8                                     
+White ID:  10                                    
+White Rating Before:  700                        
+Black Rating Before:  500                        
+(702.4025307335204, 497.5974692664796)           
+White Rating After:  702                         
+Black Rating After:  498                         
+DIFFERENTIAL                                     
+{'black': -2, 'white': 2}                        
+Differentials                                    
+{"9": 4, "8": 2, "10": -6}                       

@@ -19,7 +19,7 @@ admin.site.register(Player, PlayerAdmin)
 
 # Display all fields for the game
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('id', 'club', 'white_player', 'black_player', 'result', 'processed', 'batch_id')
+    list_display = ('id', 'club', 'white_player', 'black_player', 'result', 'processed', 'json', 'batch_id')
     list_filter = ('club_id', 'batch_id')
     search_fields = ['white_player', 'black_player', 'id']
 admin.site.register(Game, GameAdmin)

@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('', views.home, name='cc-management-home'),
     path('test/', views.test, name='cc-management-test'),
+    path('reset/', views.reset, name='cc-management-reset')
 ]
 
 # Add the club CRUD and foreign relationship URLs

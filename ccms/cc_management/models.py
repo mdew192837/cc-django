@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 # Create your models here.
 class Club(models.Model):
@@ -116,3 +117,6 @@ class Game(models.Model):
 
     # Processed is false by detault
     processed = models.BooleanField(default=False, verbose_name="Processed?")
+
+    # JSON column
+    json = JSONField(blank=True, null=True)

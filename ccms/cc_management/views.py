@@ -6,6 +6,9 @@ from django.urls import reverse
 from django_tables2 import RequestConfig
 from .tables import *
 from .models import *
+from elo import rate_1vs1
+import json
+
 # from django.http import HttpResponse
 
 # Create your views here.
@@ -19,6 +22,29 @@ def home(request):
 def test(request):
     club_classifications = Club_Classifications.objects.all()
     return render(request, 'cc_management/test.html', context={"classifications": club_classifications})
+
+def reset(request):
+    TEST_RATINGS = {
+        8: 500,
+        9: 600,
+        10: 700
+    }
+
+    GAMES = [7, 8, 9]
+
+    # Set Processed to False
+    for game_id in GAMES:
+        game = Game.objects.get(pk=game_id)
+        game.processed = False
+        game.save()
+
+    # Set those player ratings
+    for player_id, rating in TEST_RATINGS.items():
+        player = Player.objects.get(pk=player_id)
+        player.rating = rating
+        player.save()
+
+    return HttpResponse("Reset!")
 
 # CRUD for Club
 class ClubForm(ModelForm):
@@ -168,10 +194,12 @@ def club_players(request, pk_club, template_name="cc_management/players/club_pla
 def club_games(request, pk_club, template_name="cc_management/games/club_games.html"):
     club = get_object_or_404(Club, pk=pk_club)
     queryset = Game.objects.filter(club_id=pk_club).order_by('id')
+    # Determine if we have any games to process
+    needs_processing = True if len(Game.objects.filter(club_id=pk_club, processed=False)) > 0 else False
     filter = GameFilter(request.GET, queryset=queryset)
     table = GameTable(filter.qs)
     RequestConfig(request).configure(table)
-    return render(request, 'cc_management/games/club_games.html', {'table': table, 'filter': filter, 'club': club, 'games': queryset})
+    return render(request, 'cc_management/games/club_games.html', {'table': table, 'filter': filter, 'club': club, 'games': queryset, 'needs_processing': needs_processing})
 
 def game_list(request, template_name="cc_management/games/game_list.html"):
     games = Game.objects.order_by('club').order_by('id')
@@ -224,8 +252,86 @@ def game_edit(request, pk_club, pk, template_name="cc_management/games/game_edit
         return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
     return render(request, template_name, {"form": form, "club_id": pk_club})
 
+def add_differential(differentials, white_id, white_differential, black_id, black_differential):
+    if white_id in differentials:
+        differentials[white_id] = differentials[white_id] + white_differential
+    else:
+        differentials[white_id] = white_differential
+
+    if black_id in differentials:
+        differentials[black_id] = differentials[black_id] + black_differential
+    else:
+        differentials[black_id] = black_differential
+
+    return differentials
+
 def process_games(request, pk_club):
-    clubs = get_object_or_404(Club, pk=pk_club)
-    games = clubs.game_set.all().order_by('id')
-    print(games)
-    return HttpResponse("Processed!")
+    club = get_object_or_404(Club, pk=pk_club)
+    games = club.game_set.filter(processed=False).order_by('id')
+
+    # Redirect if no games to process
+    if not games:
+        messages.warning(request, 'No games to process')
+        return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
+
+    # Results are hardcoded, as defined in the models
+    RESULTS = {
+        0: "BLACK",
+        1: "DRAW",
+        2: "WHITE"
+    }
+
+    differentials = {}
+    for game in games:
+        black_player = get_object_or_404(Player, pk=game.black_player.id)
+        white_player = get_object_or_404(Player, pk=game.white_player.id)
+
+        differential = {
+            "black": {
+                "rating_before": black_player.rating,
+                "id": black_player.id
+            },
+            "white": {
+                "rating_before": white_player.rating,
+                "id": white_player.id
+            }
+        }
+
+        # Process the game
+        if RESULTS[game.result] == "BLACK":
+            results = rate_1vs1(black_player.rating, white_player.rating)
+            differential["black"]["differential"] = round(results[0]) - black_player.rating
+            differential["white"]["differential"] = round(results[1]) - white_player.rating
+        elif RESULTS[game.result] == "WHITE":
+            results = rate_1vs1(white_player.rating, black_player.rating)
+            # Since black player is second now
+            differential["black"]["differential"] = round(results[1]) - black_player.rating
+            differential["white"]["differential"] = round(results[0]) - white_player.rating
+        else:
+            # Must be a draw
+            results = rate_1vs1(white_player.rating, black_player.rating)
+            differential["black"]["differential"] = round(results[0]) - black_player.rating
+            differential["white"]["differential"] = round(results[1]) - white_player.rating
+
+        # Add the differentials
+        differentials = add_differential(differentials,
+                                        white_player.id,
+                                        differential["white"]["differential"],
+                                        black_player.id,
+                                        differential["black"]["differential"])
+
+        # Save the differential in the JSON column
+        game.json = differential
+        # Mark the game as processed
+        game.processed = True
+        game.save()
+
+    # Update the player ratings
+    for player_id, rating_differential in differentials.items():
+        player = get_object_or_404(Player, pk=player_id)
+        # Update the rating
+        player.rating = player.rating + rating_differential
+        player.save()
+
+    # TODO - Save the differentials in a batch
+    return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
