@@ -74,8 +74,42 @@ class Player(models.Model):
     )
     grade = models.IntegerField(choices=GRADE_CHOICES, blank=True, null=True)
 
+    # This is so that when people select things from dropdown, they see the player name
+    # 
+    def __str__(self):
+        return self.first_name + " " + self.last_name
     # TODO - Can classify people by elementary, middle
     """
     def is_upperclass(self):
         return self.year_in_school in (self.JUNIOR, self.SENIOR)
     """
+
+# Game Model
+class Game(models.Model):
+    # Club ID
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, verbose_name="Club Name")
+
+    # Created at and Updated at fields
+    # Use played_on instead of created_at
+    played_on = models.DateField(auto_now_add=True, verbose_name="Played On")
+    updated_at = models.DateField(auto_now=True)
+
+    # Batch ID
+    batch_id = models.IntegerField(blank=True, null=True, verbose_name="Batch Number")
+
+    # Player IDs
+    black_player = models.ForeignKey(Player, on_delete=models.CASCADE, verbose_name="Black Player", related_name="black_player")
+    white_player = models.ForeignKey(Player, on_delete=models.CASCADE, verbose_name="White Player", related_name="white_player")
+
+    # Results
+    BLACK = 0
+    DRAW = 1
+    WHITE = 2
+
+    # Grade is mandatory
+    GAME_RESULTS = (
+        (BLACK, 'Black Won!'),
+        (DRAW, 'Draw!'),
+        (WHITE, 'White Won!')
+    )
+    result = models.IntegerField(choices=GAME_RESULTS, verbose_name="Result")

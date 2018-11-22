@@ -16,7 +16,6 @@
                 <td>{{ club.id }}</td>
                 <td>
                     <a href="{% url 'club_players' club.id %}" class="btn btn-primary" role="button">View Players</a>
-                    <a href="{% url 'club_delete' club.id %}" class="btn btn-danger" role="button">Delete Club</a>
                     <a href="{% url 'club_view' club.id %}" class="btn btn-sm btn-info" role="button">View Club</a>
                     <a href="{% url 'club_edit' club.id %}" class="btn btn-sm btn-primary" role="button">Edit Club</a>
                     <a href="{% url 'club_delete' club.id %}" class="btn btn-sm btn-danger" role="button">Delete Club</a>

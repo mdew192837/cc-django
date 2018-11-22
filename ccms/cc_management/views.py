@@ -59,10 +59,13 @@ def club_delete(request, pk, template_name="cc_management/clubs/club_confirm_del
         return redirect("club_list")
     return render(request, template_name, {"club": club})
 
+"""
+Old one
 def club_players(request, pk, template_name="cc_management/clubs/club_players.html"):
     club = get_object_or_404(Club, pk=pk)
     players = club.player_set.all().order_by('id')
-    return render(request, template_name, {"club": club, "players": players})
+    return render(request, template_name, {"club_id": pk, "players": players})
+"""
 
 # CRUD for Classifications
 class ClassificationForm(ModelForm):
@@ -116,43 +119,70 @@ def player_list(request, template_name="cc_management/players/player_list.html")
     players = Player.objects.order_by('last_name')
     return render(request, template_name, {"players": players})
 
-def player_view(request, pk, template_name="cc_management/players/player_view.html"):
+def player_view(request, pk_club, pk, template_name="cc_management/players/player_view.html"):
     player = get_object_or_404(Player, pk=pk)
-    return render(request, template_name, {"player": player})
+    return render(request, template_name, {"player": player, "club_id": pk_club})
 
-def player_create(request, template_name="cc_management/players/player_create.html"):
-    form = PlayerForm(request.POST or None)
+def player_create(request, pk_club, template_name="cc_management/players/player_create.html"):
+    form = PlayerForm(request.POST or None, initial={'club_id': pk_club})
     if form.is_valid():
         player_name = form.cleaned_data.get("first_name") + " " + form.cleaned_data.get("last_name")
-        club_id = form.cleaned_data.get("club_id").id
         form.save()
         messages.success(request, f'Player {player_name} created!')
-        return HttpResponseRedirect(reverse("club_players", args=(club_id,)))
-    return render(request, template_name, {"form": form})
+        return HttpResponseRedirect(reverse("club_players", args=(pk_club,)))
+    return render(request, template_name, {"form": form, "club_id": pk_club})
 
-def player_edit(request, pk, template_name="cc_management/players/player_edit.html"):
+def player_edit(request, pk_club, pk, template_name="cc_management/players/player_edit.html"):
     player = get_object_or_404(Player, pk=pk)
     form = PlayerForm(request.POST or None, instance=player)
     if form.is_valid():
         name = form.cleaned_data.get("first_name") + " " + form.cleaned_data.get("last_name")
         form.save()
         messages.success(request, f'Profile Updated for {name}!')
-        return HttpResponseRedirect(reverse("club_players", args=(player.club_id.id,)))
-    return render(request, template_name, {"form": form, "player": player})
+        return HttpResponseRedirect(reverse("club_players", args=(pk_club,)))
+    return render(request, template_name, {"form": form, "player": player, "club_id": pk_club})
 
-def player_delete(request, pk, template_name="cc_management/players/player_confirm_delete.html"):
+def player_delete(request, pk_club, pk, template_name="cc_management/players/player_confirm_delete.html"):
     player = get_object_or_404(Player, pk=pk)
     if request.method == "POST":
         player_name = player.first_name + ' ' + player.last_name
-        club_id = player.club_id.id
         player.delete()
         messages.warning(request, f"Player {player_name} deleted.")
-        return HttpResponseRedirect(reverse("club_players", args=(club_id,)))
-    return render(request, template_name, {"player": player})
+        return HttpResponseRedirect(reverse("club_players", args=(pk_club,)))
+    return render(request, template_name, {"player": player, "club_id": pk_club})
 
-def filter_players(request):
-    queryset = Player.objects.order_by('last_name')
+def club_players(request, pk_club):
+    queryset = Player.objects.filter(club_id=pk_club).order_by('last_name')
     filter = PlayerFilter(request.GET, queryset=queryset)
     table = PlayerTable(filter.qs)
     RequestConfig(request).configure(table)
-    return render(request, 'cc_management/players/players.html', {'table': table, 'filter': filter})
+    return render(request, 'cc_management/players/players.html', {'table': table, 'filter': filter, 'club_id': pk_club})
+
+# CRUD for Games
+def filter_games(request, template_name="cc_management/games/games.html"):
+    queryset = Game.objects.order_by('club').order_by('id')
+    filter = GameFilter(request.GET, queryset=queryset)
+    table = GameTable(filter.qs)
+    RequestConfig(request).configure(table)
+    return render(request, 'cc_management/games/games.html', {'table': table, 'filter': filter})
+
+def game_list(request, template_name="cc_management/games/game_list.html"):
+    games = Game.objects.order_by('club').order_by('id')
+    return render(request, template_name, {"games": games})
+
+class GameForm(ModelForm):
+    class Meta:
+        model = Game
+        fields = ['club', 'black_player', 'white_player', 'result']
+
+def game_create(request, template_name="cc_management/games/game_create.html"):
+    form = GameForm(request.POST or None)
+    if form.is_valid():
+        club_id = form.cleaned_data.get("club").id
+        form.save()
+        messages.success(request, f'Game added!')
+        # TODO - Reverse this to the specific club
+        # TODO - Redirect to the filtering game thing
+        # TODO - Try to figure out the queries properly
+        return redirect("game_list")
+    return render(request, template_name, {"form": form})

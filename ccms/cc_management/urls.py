@@ -14,7 +14,7 @@ urlpatterns += [
     path('clubs/<int:pk>', views.club_view, name='club_view'),
     path('clubs/<int:pk>/edit', views.club_edit, name='club_edit'),
     path('clubs/<int:pk>/delete', views.club_delete, name='club_delete'),
-    path('clubs/<int:pk>/players', views.club_players, name='club_players'),
+    # path('clubs/<int:pk>/players', views.club_players, name='club_players'),
 ]
 
 # Add the classifications CRUD and foreign relationship URLs
@@ -28,10 +28,21 @@ urlpatterns += [
 
 # Add the players CRUD and foreign relationship URLs
 urlpatterns += [
-    path('players/', views.player_list, name='player_list'),
-    path('players/<int:pk>', views.player_view, name='player_view'),
-    path('players/<int:pk>/edit', views.player_edit, name='player_edit'),
-    path('players/<int:pk>/delete', views.player_delete, name='player_delete'),
-    path('players/create', views.player_create, name='player_create'),
-    path('players/filter', views.filter_players, name='filter_players'),
+    # path('players/', views.player_list, name='player_list'),
+    path('clubs/<int:pk_club>/players/<int:pk>', views.player_view, name='player_view'),
+    path('clubs/<int:pk_club>/players/<int:pk>/edit', views.player_edit, name='player_edit'),
+    path('clubs/<int:pk_club>/players/<int:pk>/delete', views.player_delete, name='player_delete'),
+    path('clubs/<int:pk_club>/players/create', views.player_create, name='player_create'),
+    path('clubs/<int:pk_club>/players', views.club_players, name='club_players'),
+]
+
+# Add the games CRUD
+urlpatterns += [
+    path('games/', views.game_list, name='game_list'),
+    path('games/filter', views.filter_games, name='filter_games'),
+    path('games/create', views.game_create, name='game_create'),
+    # path('players/<int:pk>', views.player_view, name='player_view'),
+    # path('players/<int:pk>/edit', views.player_edit, name='player_edit'),
+    # path('players/<int:pk>/delete', views.player_delete, name='player_delete'),
+    # path('players/filter', views.filter_players, name='filter_players'),
 ]

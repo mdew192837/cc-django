@@ -63,13 +63,28 @@
                 Player
               </a>
               <div class="dropdown-menu" aria-labelledby="playerDropdown">
-                <a class="dropdown-item" href="{% url 'player_create' %}">Create</a>
+                <!-- Used to be { url 'player_create' } until I decided to embed it in URLs -->
+                <a class="dropdown-item" href="#">Create</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'player_list' %}">Read, Update, Delete</a>
+                <!-- Used to be { url 'player_list' } until I decided to embed it in URLs -->
+                <a class="dropdown-item" href="#">Read, Update, Delete</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'filter_players' %}">Filter All</a>
+                <!-- Used to be { url 'filter_players' } until I decided to embed things in URLS -->
+                <a class="dropdown-item" href="#">Filter All</a>
               </div>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="gameDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Game
+                </a>
+                <div class="dropdown-menu" aria-labelledby="gameDropdown">
+                  <a class="dropdown-item" href="#">Add Game</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'game_list' %}">Read, Update, Delete</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{% url 'filter_games' %}">Filter All</a>
+                </div>
+              </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="batchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Batch

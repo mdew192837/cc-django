@@ -23,9 +23,9 @@
                 <td>{{ player.games_played }}</td>
                 <td>
                     <!-- Note that these urls will need to be updated -->
-                    <a href="{% url 'player_view' player.id %}" class="btn btn-info" role="button">View Player</a>
-                    <a href="{% url 'player_edit' player.id %}" class="btn btn-primary" role="button">Edit Player</a>
-                    <a href="{% url 'player_delete' player.id %}" class="btn btn-danger" role="button">Delete Player</a>
+                    <a href="{% url 'player_view' club_id player.id %}" class="btn btn-info" role="button">View Player</a>
+                    <a href="{% url 'player_edit' club_id player.id %}" class="btn btn-primary" role="button">Edit Player</a>
+                    <a href="{% url 'player_delete' club_id player.id %}" class="btn btn-danger" role="button">Delete Player</a>
                 </td>
             </tr>
         {% endfor %}
@@ -37,6 +37,6 @@
 
 {% endif %}
 
-<a href="#" class="btn btn-success" role="button">Add a Player!</a>
+<a href="{% url 'player_create' club_id %}" class="btn btn-success" role="button">Add a Player!</a>
 <a href="{% url 'club_list' %}" class="btn btn-primary" role="button">Back to Clubs</a>
 {% endblock content %}
