@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.forms import ModelForm, forms
 from django.contrib import messages
 from django.urls import reverse
@@ -201,6 +201,13 @@ def game_create(request, pk_club, template_name="cc_management/games/game_create
     form.fields['black_player'].queryset = Player.objects.filter(club_id=pk_club)
     form.fields['white_player'].queryset = Player.objects.filter(club_id=pk_club)
     if form.is_valid():
+        black_player = get_object_or_404(Player, pk=form.cleaned_data.get("black_player").id)
+        white_player = get_object_or_404(Player, pk=form.cleaned_data.get("white_player").id)
+        # Update the game counts for both
+        black_player.games_played = black_player.games_played + 1
+        black_player.save()
+        white_player.games_played = white_player.games_played + 1
+        white_player.save()
         form.save()
         messages.success(request, f'Game added!')
         return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
@@ -216,3 +223,9 @@ def game_edit(request, pk_club, pk, template_name="cc_management/games/game_edit
         messages.success(request, f'Game Result Updated!')
         return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
     return render(request, template_name, {"form": form, "club_id": pk_club})
+
+def process_games(request, pk_club):
+    clubs = get_object_or_404(Club, pk=pk_club)
+    games = clubs.game_set.all().order_by('id')
+    print(games)
+    return HttpResponse("Processed!")
