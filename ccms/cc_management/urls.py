@@ -28,7 +28,7 @@ urlpatterns += [
 
 # Add the players CRUD and foreign relationship URLs
 urlpatterns += [
-    # path('players/', views.player_list, name='player_list'),
+    # Old - path('players/', views.player_list, name='player_list'),
     path('clubs/<int:pk_club>/players/<int:pk>', views.player_view, name='player_view'),
     path('clubs/<int:pk_club>/players/<int:pk>/edit', views.player_edit, name='player_edit'),
     path('clubs/<int:pk_club>/players/<int:pk>/delete', views.player_delete, name='player_delete'),
@@ -39,10 +39,7 @@ urlpatterns += [
 # Add the games CRUD
 urlpatterns += [
     path('games/', views.game_list, name='game_list'),
-    path('games/filter', views.filter_games, name='filter_games'),
-    path('games/create', views.game_create, name='game_create'),
-    # path('players/<int:pk>', views.player_view, name='player_view'),
-    # path('players/<int:pk>/edit', views.player_edit, name='player_edit'),
-    # path('players/<int:pk>/delete', views.player_delete, name='player_delete'),
-    # path('players/filter', views.filter_players, name='filter_players'),
+    path('clubs/<int:pk_club>/games', views.club_games, name='club_games'),
+    path('clubs/<int:pk_club>/games/create', views.game_create, name='game_create'),
+    path('clubs/<int:pk_club>/games/<int:pk>/edit', views.game_edit, name='game_edit'),
 ]

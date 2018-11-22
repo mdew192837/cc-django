@@ -1,0 +1,23 @@
+{% extends "cc_management/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% load render_table from django_tables2 %}
+    <h1>Games</h1>
+    {% if games %}
+        {% if filter %}
+            <form action="" method="get" class="form form-inline">
+                {{ filter.form|crispy }}
+                <input class="btn btn-primary" type="submit" value="Filter!">
+            </form>
+            <br>
+        {% endif %}
+        {% render_table table 'django_tables2/bootstrap4.html' %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Currently no games for {{ club.name }}!
+        </div>
+    {% endif %}
+    <a href="{% url 'game_create' club.id %}" class="btn btn-success" role="button">Create a Game!</a>
+    <a href="{% url 'club_list' %}" class="btn btn-info" role="button">Back to Clubs!</a>
+{% endblock content %}

@@ -113,3 +113,6 @@ class Game(models.Model):
         (WHITE, 'White Won!')
     )
     result = models.IntegerField(choices=GAME_RESULTS, verbose_name="Result")
+
+    # Processed is false by detault
+    processed = models.BooleanField(default=False, verbose_name="Processed?")

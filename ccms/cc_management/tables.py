@@ -25,12 +25,12 @@ class PlayerFilter(django_filters.FilterSet):
 class FilteredPlayerListView(SingleTableMixin, FilterView):
     table_class = PlayerTable
     model = Player
-    template_name = 'cc_management/players/players.html'
+    template_name = 'cc_management/players/club_players.html'
 
     filterset_class = PlayerFilter
 
 class GameTable(tables.Table):
-    edit = tables.TemplateColumn('<a href="#" class="btn btn-primary" role="button">Edit</a>', verbose_name='Edit')
+    edit = tables.TemplateColumn('<a href={% url "game_edit" record.club.id record.id %} class="btn btn-primary" role="button">Edit</a>', verbose_name='Edit')
     class Meta:
         model = Game
         template_name = 'django_tables2/bootstrap4.html'
@@ -42,11 +42,11 @@ class GameTable(tables.Table):
 class GameFilter(django_filters.FilterSet):
     class Meta:
         model = Game
-        fields = ['white_player', 'black_player', 'club', 'result', 'batch_id']
+        fields = ['white_player', 'black_player', 'result']
 
 class FilteredGameListView(SingleTableMixin, FilterView):
     table_class = GameTable
     model = Game
-    template_name = 'cc_management/games/games.html'
+    template_name = 'cc_management/games/club_games.html'
 
     filterset_class = GameFilter

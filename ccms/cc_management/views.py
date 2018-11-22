@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.forms import ModelForm
+from django.forms import ModelForm, forms
 from django.contrib import messages
 from django.urls import reverse
 from django_tables2 import RequestConfig
@@ -9,9 +9,12 @@ from .models import *
 # from django.http import HttpResponse
 
 # Create your views here.
-def home(request):
+def old_home(request):
     clubs = Club.objects.all()
     return render(request, 'cc_management/home.html', context={"clubs": clubs})
+
+def home(request):
+    return redirect('/clubs')
 
 def test(request):
     club_classifications = Club_Classifications.objects.all()
@@ -60,7 +63,7 @@ def club_delete(request, pk, template_name="cc_management/clubs/club_confirm_del
     return render(request, template_name, {"club": club})
 
 """
-Old one
+Old - Before we swapped to the new url routes /club/<int:pk_club>/players
 def club_players(request, pk, template_name="cc_management/clubs/club_players.html"):
     club = get_object_or_404(Club, pk=pk)
     players = club.player_set.all().order_by('id')
@@ -124,6 +127,7 @@ def player_view(request, pk_club, pk, template_name="cc_management/players/playe
     return render(request, template_name, {"player": player, "club_id": pk_club})
 
 def player_create(request, pk_club, template_name="cc_management/players/player_create.html"):
+    club = get_object_or_404(Club, pk=pk_club)
     form = PlayerForm(request.POST or None, initial={'club_id': pk_club})
     if form.is_valid():
         player_name = form.cleaned_data.get("first_name") + " " + form.cleaned_data.get("last_name")
@@ -151,38 +155,64 @@ def player_delete(request, pk_club, pk, template_name="cc_management/players/pla
         return HttpResponseRedirect(reverse("club_players", args=(pk_club,)))
     return render(request, template_name, {"player": player, "club_id": pk_club})
 
-def club_players(request, pk_club):
+def club_players(request, pk_club, template_name="cc_management/players/club_players.html"):
+    club = get_object_or_404(Club, pk=pk_club)
     queryset = Player.objects.filter(club_id=pk_club).order_by('last_name')
     filter = PlayerFilter(request.GET, queryset=queryset)
     table = PlayerTable(filter.qs)
     RequestConfig(request).configure(table)
-    return render(request, 'cc_management/players/players.html', {'table': table, 'filter': filter, 'club_id': pk_club})
+    # Could just do 'club_id': pk_club but that's meta yo
+    return render(request, template_name, {'table': table, 'filter': filter, 'club': club, 'players': queryset})
 
 # CRUD for Games
-def filter_games(request, template_name="cc_management/games/games.html"):
-    queryset = Game.objects.order_by('club').order_by('id')
+def club_games(request, pk_club, template_name="cc_management/games/club_games.html"):
+    club = get_object_or_404(Club, pk=pk_club)
+    queryset = Game.objects.filter(club_id=pk_club).order_by('id')
     filter = GameFilter(request.GET, queryset=queryset)
     table = GameTable(filter.qs)
     RequestConfig(request).configure(table)
-    return render(request, 'cc_management/games/games.html', {'table': table, 'filter': filter})
+    return render(request, 'cc_management/games/club_games.html', {'table': table, 'filter': filter, 'club': club, 'games': queryset})
 
 def game_list(request, template_name="cc_management/games/game_list.html"):
     games = Game.objects.order_by('club').order_by('id')
     return render(request, template_name, {"games": games})
 
 class GameForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(GameForm, self).__init__(*args, **kwargs)
+        self.fields['club'].disabled = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        black_player = cleaned_data.get("black_player")
+        white_player = cleaned_data.get("white_player")
+        if black_player.id == white_player.id:
+            raise forms.ValidationError(
+                "The black and white players must be different!"
+            )
+
     class Meta:
         model = Game
         fields = ['club', 'black_player', 'white_player', 'result']
 
-def game_create(request, template_name="cc_management/games/game_create.html"):
-    form = GameForm(request.POST or None)
+def game_create(request, pk_club, template_name="cc_management/games/game_create.html"):
+    club = get_object_or_404(Club, pk=pk_club)
+    form = GameForm(request.POST or None, initial={'club': pk_club})
+    form.fields['black_player'].queryset = Player.objects.filter(club_id=pk_club)
+    form.fields['white_player'].queryset = Player.objects.filter(club_id=pk_club)
     if form.is_valid():
-        club_id = form.cleaned_data.get("club").id
         form.save()
         messages.success(request, f'Game added!')
-        # TODO - Reverse this to the specific club
-        # TODO - Redirect to the filtering game thing
-        # TODO - Try to figure out the queries properly
-        return redirect("game_list")
-    return render(request, template_name, {"form": form})
+        return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
+    return render(request, template_name, {"form": form, "club_id": pk_club})
+
+def game_edit(request, pk_club, pk, template_name="cc_management/games/game_edit.html"):
+    game = get_object_or_404(Game, pk=pk)
+    form = GameForm(request.POST or None, instance=game)
+    form.fields['black_player'].disabled = True
+    form.fields['white_player'].disabled = True
+    if form.is_valid():
+        form.save()
+        messages.success(request, f'Game Result Updated!')
+        return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
+    return render(request, template_name, {"form": form, "club_id": pk_club})
