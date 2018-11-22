@@ -37,7 +37,7 @@ class Player(models.Model):
     uscf_id = models.IntegerField(blank=True, null=True, verbose_name="USCF ID")
     uscf_rating = models.IntegerField(blank=True, null=True, verbose_name="USCF Rating")
     # Rating is mandatory, default 0
-    rating = models.IntegerField(default=0, verbose_name="Club Rating")
+    rating = models.IntegerField(default=1200, verbose_name="Club Rating")
     # Number of games is mandatory, default 0
     games_played = models.IntegerField(default=0, verbose_name="# of Games Played")
 
