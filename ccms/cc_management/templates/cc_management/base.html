@@ -82,6 +82,15 @@
               </div>
             </li>
           </ul>
+          <!-- Navbar right side -->
+          <div class="navbar-nav">
+            {% if user.is_authenticated %}
+              <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+              <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+            {% endif %}
+          </div>
           <!-- Not necessary right now
           <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

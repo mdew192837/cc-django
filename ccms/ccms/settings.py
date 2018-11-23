@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django_tables2',
     'crispy_forms',
     'cc_management.apps.CcManagementConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -131,3 +132,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Django Table Setting
 DJANGO_TABLES2_TEMPLATE = 'django_tables2/bootstrap4.html'
+
+# Login Redirect URL
+LOGIN_REDIRECT_URL = 'club_list'
+
+# Login URL for @login_required pages
+LOGIN_URL = 'login'

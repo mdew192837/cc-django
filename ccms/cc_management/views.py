@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.forms import ModelForm, forms
 from django.contrib import messages
 from django.urls import reverse
@@ -12,17 +14,22 @@ import json
 # from django.http import HttpResponse
 
 # Create your views here.
+@login_required
 def old_home(request):
     clubs = Club.objects.all()
     return render(request, 'cc_management/home.html', context={"clubs": clubs})
 
+@login_required
 def home(request):
     return redirect('/clubs')
 
+@login_required
 def test(request):
     club_classifications = Club_Classifications.objects.all()
     return render(request, 'cc_management/test.html', context={"classifications": club_classifications})
 
+@login_required
+@staff_member_required
 def reset(request):
     TEST_RATINGS = {
         8: 500,
@@ -52,14 +59,18 @@ class ClubForm(ModelForm):
         model = Club
         fields = ['name']
 
+@login_required
 def club_list(request, template_name="cc_management/clubs/club_list.html"):
     clubs = Club.objects.order_by('id')
     return render(request, template_name, {"clubs": clubs})
 
+@login_required
 def club_view(request, pk, template_name="cc_management/clubs/club_detail.html"):
     club = get_object_or_404(Club, pk=pk)
     return render(request, template_name, {"club": club})
 
+@login_required
+@staff_member_required
 def club_create(request, template_name="cc_management/clubs/club_create.html"):
     form = ClubForm(request.POST or None)
     if form.is_valid():
@@ -69,6 +80,8 @@ def club_create(request, template_name="cc_management/clubs/club_create.html"):
         return redirect("club_list")
     return render(request, template_name, {"form": form})
 
+@login_required
+@staff_member_required
 def club_edit(request, pk, template_name="cc_management/clubs/club_edit.html"):
     club = get_object_or_404(Club, pk=pk)
     form = ClubForm(request.POST or None, instance=club)
@@ -79,6 +92,8 @@ def club_edit(request, pk, template_name="cc_management/clubs/club_edit.html"):
         return redirect("club_list")
     return render(request, template_name, {"form": form, "club": club})
 
+@login_required
+@staff_member_required
 def club_delete(request, pk, template_name="cc_management/clubs/club_confirm_delete.html"):
     club = get_object_or_404(Club, pk=pk)
     if request.method == "POST":
@@ -102,14 +117,18 @@ class ClassificationForm(ModelForm):
         model = Club_Classifications
         fields = ['name']
 
+@login_required
 def classification_list(request, template_name="cc_management/classifications/classification_list.html"):
     classifications_list = Club_Classifications.objects.order_by('id')
     return render(request, template_name, {"classifications": classifications_list})
 
+@login_required
 def classification_view(request, pk, template_name="cc_management/classifications/classification_view.html"):
     classification = get_object_or_404(Club_Classifications, pk=pk)
     return render(request, template_name, {"classification": classification})
 
+@login_required
+@staff_member_required
 def classification_create(request, template_name="cc_management/classifications/classification_create.html"):
     form = ClassificationForm(request.POST or None)
     if form.is_valid():
@@ -119,6 +138,8 @@ def classification_create(request, template_name="cc_management/classifications/
         return redirect("classification_list")
     return render(request, template_name, {"form": form})
 
+@login_required
+@staff_member_required
 def classification_edit(request, pk, template_name="cc_management/classifications/classification_edit.html"):
     classification = get_object_or_404(Club_Classifications, pk=pk)
     form = ClassificationForm(request.POST or None, instance=classification)
@@ -129,6 +150,8 @@ def classification_edit(request, pk, template_name="cc_management/classification
         return redirect("classification_list")
     return render(request, template_name, {"form": form, "classification": classification})
 
+@login_required
+@staff_member_required
 def classification_delete(request, pk, template_name="cc_management/classifications/classification_confirm_delete.html"):
     classification = get_object_or_404(Club_Classifications, pk=pk)
     if request.method == "POST":
@@ -144,14 +167,18 @@ class PlayerForm(ModelForm):
         model = Player
         fields = ['first_name', 'middle_name', 'last_name', 'club_id', 'classification', 'grade', 'uscf_id', 'uscf_rating', 'rating', 'games_played', 'is_active']
 
+@login_required
 def player_list(request, template_name="cc_management/players/player_list.html"):
     players = Player.objects.order_by('last_name')
     return render(request, template_name, {"players": players})
 
+@login_required
 def player_view(request, pk_club, pk, template_name="cc_management/players/player_view.html"):
     player = get_object_or_404(Player, pk=pk)
     return render(request, template_name, {"player": player, "club_id": pk_club})
 
+@login_required
+@staff_member_required
 def player_create(request, pk_club, template_name="cc_management/players/player_create.html"):
     club = get_object_or_404(Club, pk=pk_club)
     form = PlayerForm(request.POST or None, initial={'club_id': pk_club})
@@ -162,6 +189,8 @@ def player_create(request, pk_club, template_name="cc_management/players/player_
         return HttpResponseRedirect(reverse("club_players", args=(pk_club,)))
     return render(request, template_name, {"form": form, "club_id": pk_club})
 
+@login_required
+@staff_member_required
 def player_edit(request, pk_club, pk, template_name="cc_management/players/player_edit.html"):
     player = get_object_or_404(Player, pk=pk)
     form = PlayerForm(request.POST or None, instance=player)
@@ -172,6 +201,8 @@ def player_edit(request, pk_club, pk, template_name="cc_management/players/playe
         return HttpResponseRedirect(reverse("club_players", args=(pk_club,)))
     return render(request, template_name, {"form": form, "player": player, "club_id": pk_club})
 
+@login_required
+@staff_member_required
 def player_delete(request, pk_club, pk, template_name="cc_management/players/player_confirm_delete.html"):
     player = get_object_or_404(Player, pk=pk)
     if request.method == "POST":
@@ -181,6 +212,7 @@ def player_delete(request, pk_club, pk, template_name="cc_management/players/pla
         return HttpResponseRedirect(reverse("club_players", args=(pk_club,)))
     return render(request, template_name, {"player": player, "club_id": pk_club})
 
+@login_required
 def club_players(request, pk_club, template_name="cc_management/players/club_players.html"):
     club = get_object_or_404(Club, pk=pk_club)
     queryset = Player.objects.filter(club_id=pk_club).order_by('last_name')
@@ -191,6 +223,7 @@ def club_players(request, pk_club, template_name="cc_management/players/club_pla
     return render(request, template_name, {'table': table, 'filter': filter, 'club': club, 'players': queryset})
 
 # CRUD for Games
+@login_required
 def club_games(request, pk_club, template_name="cc_management/games/club_games.html"):
     club = get_object_or_404(Club, pk=pk_club)
     queryset = Game.objects.filter(club_id=pk_club).order_by('id')
@@ -201,6 +234,7 @@ def club_games(request, pk_club, template_name="cc_management/games/club_games.h
     RequestConfig(request).configure(table)
     return render(request, 'cc_management/games/club_games.html', {'table': table, 'filter': filter, 'club': club, 'games': queryset, 'needs_processing': needs_processing})
 
+@login_required
 def game_list(request, template_name="cc_management/games/game_list.html"):
     games = Game.objects.order_by('club').order_by('id')
     return render(request, template_name, {"games": games})
@@ -223,6 +257,8 @@ class GameForm(ModelForm):
         model = Game
         fields = ['club', 'black_player', 'white_player', 'result']
 
+@login_required
+@staff_member_required
 def game_create(request, pk_club, template_name="cc_management/games/game_create.html"):
     club = get_object_or_404(Club, pk=pk_club)
     form = GameForm(request.POST or None, initial={'club': pk_club})
@@ -241,6 +277,8 @@ def game_create(request, pk_club, template_name="cc_management/games/game_create
         return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
     return render(request, template_name, {"form": form, "club_id": pk_club})
 
+@login_required
+@staff_member_required
 def game_edit(request, pk_club, pk, template_name="cc_management/games/game_edit.html"):
     game = get_object_or_404(Game, pk=pk)
     form = GameForm(request.POST or None, instance=game)
@@ -267,6 +305,8 @@ def add_differential(differentials, white_player, white_differential, black_play
 
     return differentials
 
+@login_required
+@staff_member_required
 def process_games(request, pk_club):
     club = get_object_or_404(Club, pk=pk_club)
     games = club.game_set.filter(processed=False).order_by('id')
