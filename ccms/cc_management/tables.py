@@ -40,6 +40,13 @@ class GameTable(tables.Table):
         exclude= ('played_on', 'updated_at', 'id')
 
 class GameFilter(django_filters.FilterSet):
+    def __init__(self, *args, **kwargs):
+        # We pass an additional argument
+        pk_club = args[1]
+        super(GameFilter, self).__init__(args[0], **kwargs)
+        self.filters['white_player'].queryset = Player.objects.filter(club_id=pk_club).order_by('last_name')
+        self.filters['black_player'].queryset = Player.objects.filter(club_id=pk_club).order_by('last_name')
+
     class Meta:
         model = Game
         fields = ['white_player', 'black_player', 'result']

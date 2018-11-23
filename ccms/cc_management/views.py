@@ -196,7 +196,7 @@ def club_games(request, pk_club, template_name="cc_management/games/club_games.h
     queryset = Game.objects.filter(club_id=pk_club).order_by('id')
     # Determine if we have any games to process
     needs_processing = True if len(Game.objects.filter(club_id=pk_club, processed=False)) > 0 else False
-    filter = GameFilter(request.GET, queryset=queryset)
+    filter = GameFilter(request.GET, pk_club, queryset=queryset)
     table = GameTable(filter.qs)
     RequestConfig(request).configure(table)
     return render(request, 'cc_management/games/club_games.html', {'table': table, 'filter': filter, 'club': club, 'games': queryset, 'needs_processing': needs_processing})
@@ -253,15 +253,15 @@ def game_edit(request, pk_club, pk, template_name="cc_management/games/game_edit
     return render(request, template_name, {"form": form, "club_id": pk_club})
 
 def add_differential(differentials, white_id, white_differential, black_id, black_differential):
-    if white_id in differentials:
-        differentials[white_id] = differentials[white_id] + white_differential
+    if white_id in differentials["differentials"]:
+        differentials["differentials"][white_id] = differentials["differentials"][white_id] + white_differential
     else:
-        differentials[white_id] = white_differential
+        differentials["differentials"][white_id] = white_differential
 
-    if black_id in differentials:
-        differentials[black_id] = differentials[black_id] + black_differential
+    if black_id in differentials["differentials"]:
+        differentials["differentials"][black_id] = differentials["differentials"][black_id] + black_differential
     else:
-        differentials[black_id] = black_differential
+        differentials["differentials"][black_id] = black_differential
 
     return differentials
 
@@ -281,8 +281,16 @@ def process_games(request, pk_club):
         2: "WHITE"
     }
 
-    differentials = {}
+    differentials = {
+        "differentials": {},
+        "games": []
+    }
+
     for game in games:
+        # Add the game id
+        # TODO - Go through the IDs and update their batch_id
+        differentials["games"].append(game.id)
+
         black_player = get_object_or_404(Player, pk=game.black_player.id)
         white_player = get_object_or_404(Player, pk=game.white_player.id)
 
@@ -310,8 +318,8 @@ def process_games(request, pk_club):
         else:
             # Must be a draw
             results = rate_1vs1(white_player.rating, black_player.rating)
-            differential["black"]["differential"] = round(results[0]) - black_player.rating
-            differential["white"]["differential"] = round(results[1]) - white_player.rating
+            differential["black"]["differential"] = round(results[1]) - black_player.rating
+            differential["white"]["differential"] = round(results[0]) - white_player.rating
 
         # Add the differentials
         differentials = add_differential(differentials,
@@ -327,11 +335,12 @@ def process_games(request, pk_club):
         game.save()
 
     # Update the player ratings
-    for player_id, rating_differential in differentials.items():
+    for player_id, rating_differential in differentials["differentials"].items():
         player = get_object_or_404(Player, pk=player_id)
         # Update the rating
         player.rating = player.rating + rating_differential
         player.save()
 
     # TODO - Save the differentials in a batch
+    print(differentials)
     return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
