@@ -120,3 +120,14 @@ class Game(models.Model):
 
     # JSON column
     json = JSONField(blank=True, null=True)
+
+# Batch Model
+class Batch(models.Model):
+    # Processed On Date automatically created
+    processed_on = models.DateField(auto_now_add=True, verbose_name="Processed On")
+    updated_at = models.DateField(auto_now=True)
+
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, verbose_name="Club Name")
+
+    # JSON Column
+    json = JSONField(blank=True, null=True)

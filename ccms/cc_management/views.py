@@ -252,16 +252,18 @@ def game_edit(request, pk_club, pk, template_name="cc_management/games/game_edit
         return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
     return render(request, template_name, {"form": form, "club_id": pk_club})
 
-def add_differential(differentials, white_id, white_differential, black_id, black_differential):
-    if white_id in differentials["differentials"]:
-        differentials["differentials"][white_id] = differentials["differentials"][white_id] + white_differential
+def add_differential(differentials, white_player, white_differential, black_player, black_differential):
+    if white_player.id in differentials["players"]:
+        differentials["players"][white_player.id]["differential"] = differentials["players"][white_player.id]["differential"] + white_differential
     else:
-        differentials["differentials"][white_id] = white_differential
+        differentials["players"][white_player.id] = {}
+        differentials["players"][white_player.id]["differential"] = white_differential
 
-    if black_id in differentials["differentials"]:
-        differentials["differentials"][black_id] = differentials["differentials"][black_id] + black_differential
+    if black_player.id in differentials["players"]:
+        differentials["players"][black_player.id]["differential"] = differentials["players"][black_player.id]["differential"] + black_differential
     else:
-        differentials["differentials"][black_id] = black_differential
+        differentials["players"][black_player.id] = {}
+        differentials["players"][black_player.id]["differential"] = black_differential
 
     return differentials
 
@@ -282,7 +284,7 @@ def process_games(request, pk_club):
     }
 
     differentials = {
-        "differentials": {},
+        "players": {},
         "games": []
     }
 
@@ -323,9 +325,9 @@ def process_games(request, pk_club):
 
         # Add the differentials
         differentials = add_differential(differentials,
-                                        white_player.id,
+                                        white_player,
                                         differential["white"]["differential"],
-                                        black_player.id,
+                                        black_player,
                                         differential["black"]["differential"])
 
         # Save the differential in the JSON column
@@ -335,12 +337,21 @@ def process_games(request, pk_club):
         game.save()
 
     # Update the player ratings
-    for player_id, rating_differential in differentials["differentials"].items():
+    for player_id, properties in differentials["players"].items():
         player = get_object_or_404(Player, pk=player_id)
+        # Store the previous rating
+        differentials["players"][player_id]["rating_before"] = player.rating
         # Update the rating
-        player.rating = player.rating + rating_differential
+        player.rating = player.rating + properties["differential"]
         player.save()
+        # Store the new rating
+        differentials["players"][player_id]["rating_after"] = player.rating
 
     # TODO - Save the differentials in a batch
     print(differentials)
+
+    # Create the batch
+    batch = Batch.objects.create(club=get_object_or_404(Club, pk=pk_club), json=differentials)
+
+    # Redirect to the games page
     return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
