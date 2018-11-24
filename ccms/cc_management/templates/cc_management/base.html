@@ -23,67 +23,26 @@
       
         <div class="collapse navbar-collapse" id="app-nav">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'club_list' %}">Home (Clubs)</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="testDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Test
-              </a>
-              <div class="dropdown-menu" aria-labelledby="testDropdown">
-                <a class="dropdown-item" href="{% url 'cc-management-test' %}">Test</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/test2">Test ELO</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/test3">Test Batch</a>
-              </div>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'classification_list' %}">Classifications</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="clubDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Club
-              </a>
-              <div class="dropdown-menu" aria-labelledby="clubDropdown">
-                <a class="dropdown-item" href="{% url 'club_create' %}">Create</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'club_list' %}">Read, Update, Delete</a>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="classificationDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Classification
-              </a>
-              <div class="dropdown-menu" aria-labelledby="classificationDropdown">
-                <a class="dropdown-item" href="{% url 'classification_create' %}">Create</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'classification_list' %}">Read, Update, Delete</a>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="gameDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Game
-                </a>
-                <div class="dropdown-menu" aria-labelledby="gameDropdown">
-                  <a class="dropdown-item" href="#">Add Game</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="{% url 'game_list' %}">Read, Update, Delete</a>
-                  <div class="dropdown-divider"></div>
-                  <!-- Used to be { url 'filter_games' } -->
-                  <a class="dropdown-item" href="#">Filter All</a>
-                </div>
+            {% if user.is_superuser %}
+              <!-- For testing purposes only -->
+              <!-- Tests on Club 4 USN with players with id 8-10 and games 7-9 -->
+              <!-- Refer to views.py in the reset function -->
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'cc-management-reset' %}">Reset</a>
               </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="batchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Batch
-              </a>
-              <div class="dropdown-menu" aria-labelledby="batchDropdown">
-                <a class="dropdown-item" href="#">Add Batch</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Read, Update, Delete</a>
-              </div>
-            </li>
+            {% endif %}
           </ul>
           <!-- Navbar right side -->
           <div class="navbar-nav">
+            {% if user.is_superuser %}
+              <a class="nav-item nav-link" href="/admin">Admin</a>
+            {% endif %}
             {% if user.is_authenticated %}
               <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
             {% else %}
@@ -91,12 +50,6 @@
               <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
             {% endif %}
           </div>
-          <!-- Not necessary right now
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-          -->
         </div>
       </nav>
     </header>
