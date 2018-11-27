@@ -1,5 +1,6 @@
 appdirs==1.4.3
 beautifulsoup4==4.6.3
+boto==2.49.0
 bs4==0.0.1
 certifi==2018.10.15
 chardet==3.0.4
@@ -29,3 +30,4 @@ tqdm==4.28.1
 urllib3==1.24.1
 w3lib==1.19.0
 websockets==7.0
+whitenoise==4.1.2
