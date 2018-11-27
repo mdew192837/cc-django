@@ -19,12 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['104.248.50.78', '127.0.0.1']
+ALLOWED_HOSTS = ['ccapp-django.herokuapp.com', '104.248.50.78', '127.0.0.1']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,6 +88,9 @@ DATABASES = {
     }
 }
 
+import dj_database_url
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -120,12 +124,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-
-STATIC_URL = '/static/'
-
 # Crispy Forms Settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -140,9 +138,27 @@ LOGIN_URL = 'login'
 
 # E-mail Stuff
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
-DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_USER')
+EMAIL_HOST_USER = os.environ['EMAIL_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASS']
+DEFAULT_FROM_EMAIL = os.environ['EMAIL_USER']
+
+# Static File Serving - Heroku
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
+
+STATIC_ROOT = os.path.join(BASE_DIR, "live-static", "static-root")
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_URL = "/media/"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "live-static", "media-root")
