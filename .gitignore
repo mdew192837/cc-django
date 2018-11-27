@@ -1,0 +1,7 @@
+ccms/__pychache__
+cc_management/__pycache__
+cc_management/migrations/__pycache__
+__pycache__/
+
+# Environment variables
+.env
