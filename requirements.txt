@@ -11,9 +11,11 @@ django-filter==2.0.0
 django-tables2==2.0.3
 elo==0.1.1
 fake-useragent==0.1.11
+gunicorn==19.9.0
 idna==2.7
 lxml==4.2.5
 parse==1.9.0
+psycopg2==2.7.6.1
 psycopg2-binary==2.7.6.1
 pyee==5.0.0
 pyppeteer==0.0.25
