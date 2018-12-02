@@ -178,6 +178,7 @@ def player_view(request, pk_club, pk, template_name="cc_management/players/playe
 @login_required
 @staff_member_required
 def player_create(request, pk_club, template_name="cc_management/players/player_create.html"):
+    classifications = len(Club_Classifications.objects.all())
     club = get_object_or_404(Club, pk=pk_club)
     form = PlayerForm(request.POST or None, initial={'club_id': pk_club})
     if form.is_valid():
@@ -185,7 +186,7 @@ def player_create(request, pk_club, template_name="cc_management/players/player_
         form.save()
         messages.success(request, f'Player {player_name} created!')
         return HttpResponseRedirect(reverse("club_players", args=(pk_club,)))
-    return render(request, template_name, {"form": form, "club_id": pk_club})
+    return render(request, template_name, {"form": form, "club_id": pk_club, "classifications": classifications})
 
 @login_required
 @staff_member_required
@@ -259,9 +260,10 @@ class GameForm(ModelForm):
 @staff_member_required
 def game_create(request, pk_club, template_name="cc_management/games/game_create.html"):
     club = get_object_or_404(Club, pk=pk_club)
+    players = Player.objects.filter(club_id=pk_club)
     form = GameForm(request.POST or None, initial={'club': pk_club})
-    form.fields['black_player'].queryset = Player.objects.filter(club_id=pk_club)
-    form.fields['white_player'].queryset = Player.objects.filter(club_id=pk_club)
+    form.fields['black_player'].queryset = players
+    form.fields['white_player'].queryset = players
     if form.is_valid():
         black_player = get_object_or_404(Player, pk=form.cleaned_data.get("black_player").id)
         white_player = get_object_or_404(Player, pk=form.cleaned_data.get("white_player").id)
@@ -273,7 +275,7 @@ def game_create(request, pk_club, template_name="cc_management/games/game_create
         form.save()
         messages.success(request, f'Game added!')
         return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
-    return render(request, template_name, {"form": form, "club_id": pk_club})
+    return render(request, template_name, {"form": form, "club_id": pk_club, "players": len(players)})
 
 @login_required
 @staff_member_required

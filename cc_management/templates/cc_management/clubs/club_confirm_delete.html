@@ -5,8 +5,9 @@
 
 <form method="post">
     {% csrf_token %}
-    <div class="alert alert-warning">
+    <div class="alert alert-danger">
         Are you sure you want to delete Club {{ club.name }}?
+        This will delete <strong>all</strong> players within the club.
     </div>
     <div>
         <input class="btn btn-success" type="submit" value = "Submit!"/>

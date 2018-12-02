@@ -5,8 +5,9 @@
 
 <form method="post">
     {% csrf_token %}
-    <div class="alert alert-warning">
+    <div class="alert alert-danger">
         Are you sure you want to delete Classification {{ classification.name }}?
+        This will delete <strong>all</strong> players within the classification across <strong>all</strong> clubs.
     </div>
     <div>
         <input class="btn btn-success" type="submit" value = "Submit!"/>

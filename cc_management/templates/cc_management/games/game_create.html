@@ -4,11 +4,19 @@
 {% block content %}
 <h1>Add Game</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input class="btn btn-success" type="submit" value = "Submit!"/>
-    <a href="{% url 'club_games' club_id %}" class="btn btn-danger" role="button">Cancel</a>
-</form>
+{% if players > 0 %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input class="btn btn-success" type="submit" value = "Submit!"/>
+        <a href="{% url 'club_games' club_id %}" class="btn btn-danger" role="button">Cancel</a>
+    </form>
+{% else %}
+    <div class="alert alert-warning">
+       You must have at least two players before you can add a game to a club.
+    </div>
+    <a href="{% url 'player_create' club_id %}" class="btn btn-success" role="button">Add Player</a>
+    <a class="btn btn-info" href="{% url 'club_list' %}">Back to Clubs</a>
+{% endif %}
 
 {% endblock content %}

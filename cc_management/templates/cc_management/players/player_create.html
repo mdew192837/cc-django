@@ -4,11 +4,18 @@
 {% block content %}
 <h1>Create Player</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input class="btn btn-success" type="submit" value = "Submit!"/>
-    <a href="{% url 'club_players' club_id %}" class="btn btn-danger" role="button">Cancel</a>
-</form>
+{% if classifications > 0 %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input class="btn btn-success" type="submit" value = "Submit!"/>
+        <a href="{% url 'club_players' club_id %}" class="btn btn-danger" role="button">Cancel</a>
+    </form>
+{% else %}
+    <div class="alert alert-warning">
+       You must have at least one classification before you can add a player to a club.
+    </div>
+    <a href="{% url 'classification_create' %}" class="btn btn-success" role="button">Create Classification!</a>
+{% endif %}
 
 {% endblock content %}
