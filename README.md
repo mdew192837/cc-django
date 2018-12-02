@@ -122,7 +122,7 @@ Most functionality will be the same. You can still view games, players, and club
 
 ### Additional Features for Staff
 Note that all desired actions can always be accessed via buttons in the table on the homepage.
-* Add a game to a specific club by the clicking the `Add Game` button. Note that you can only do this if you have two or more players in that club.
+* Add a game to a specific club by the clicking the `Add Game` button. Adding a game will automatically update the `games_played` number for both the white and black player. Note that you can only do this if you have two or more players in that club.
 * Add a player to a specific club by clicking the `Add Player` button. Required fields will be marked with an asterisk and you will receive a bootstrap hint via JS if you do not fill out a required field. If you disable javascript, there is also backend authentication. This applies to similar CRUD features.
   * Cool feature. If you add a player's USCF ID (mine is 13778174), then the app will automatically fetch the player's USCF rating once the profile is saved.
 * Edit a game. Note that you cannot edit the players for a game, only the result of the game. Furthermore, this will not reprocess ratings as of now, as I was unable to figure out stepping back in time at this point.
@@ -136,7 +136,6 @@ This is the key feature of this application. When games are created for a club, 
 Clicking this will do the following:
 * Go through all unprocessed games for the club. It will process all games according to the [ELO rating system](https://en.wikipedia.org/wiki/Elo_rating_system). This will:
   * Update ratings for all players (after it goes through all games. This is because players may have played multiple games and we want to process games based on the previous rating of the player. This is done by processing each game using the current player rating, calculating and storing the rating differential for that game, and then summing those at the end to update the player rating)
-  * Update the `games played` for each player
   * Mark each game as processed. When it does this, it will also create a JSON object containing the `id`, `differential` (how much the rating changed), and the `rating_before` the game was processed for that player. [Here](https://drive.google.com/open?id=1QZ4oecvmbQ94qT86J4JPKH_r_OnYf25E) is what the JSON would look like.
 * It will also create a batch, which contains the `club name`, `processed_on date`, and a `JSON` object that has:
   * An array of the IDs of the games processed in that batch
