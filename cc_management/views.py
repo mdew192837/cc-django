@@ -11,8 +11,6 @@ from .models import *
 from elo import rate_1vs1
 import json
 
-# from django.http import HttpResponse
-
 # Create your views here.
 @login_required
 def old_home(request):

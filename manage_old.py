@@ -7,7 +7,8 @@ import dotenv
 if __name__ == '__main__':
     dotenv.read_dotenv()
 
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ccms.settings')
+    # Load the proper settings
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ccms.settings_old')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
