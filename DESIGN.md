@@ -127,15 +127,25 @@ My solution was then... to use Heroku!
 ### Deploying to Heroku (Let's Hope it Works... It Did :) )
 I then asked some friends (including the chess coach) on what advice they might have, and they said that they recommended I try to use Heroku.
 
-Some issues ran up there.
+Some issues ran up there. The main ones are listed below.
+
+I found these two resources **extremely** helpful:
+* [Source 1](https://www.youtube.com/watch?v=TgmeAN32Uvw&index=7&list=PLEsfXFp6DpzTgDieSvwKL3CakR8XyKkBk)
+* [Source 2](https://github.com/codingforentrepreneurs/Guides/blob/master/all/Heroku_Django_Deployment_Guide.md)
 
 #### Different Config Variables
 
 So locally, I was using a `.env` file and using `django-dotenv` to read in the environment variables for the database and e-mail server information, as well as the secret key for the app. However, when you push to Heroku, you don't want to push your `.env` file and there may be a race condition where you try to access a variable before Heroku reads it in.
 
-I realized Heroku has their own config variables (linked [here](https://devcenter.heroku.com/articles/config-vars))
+I realized Heroku has their own config variables (linked [here](https://devcenter.heroku.com/articles/config-vars)), so I had to figure out how to access those variables.
 
+#### Remote Postgres Server
 
+I had no idea what the credentials for my Postgres server would be if I wasn't running Postgres anymore. However, Heroku has an add-on for Postgres that can be used. Furthermore, it's just a few lines to include the database in a python app like mine. (documentation [here](https://devcenter.heroku.com/articles/heroku-postgresql#connecting-in-python))
+
+#### Generating Static Files
+
+Since I am no longer running the app locally, I had to generate my static files for the admin site mainly to have it all nice and bootstrapped rather than just barebones HTML.
 
 ## The Future - Scaling Up
 
