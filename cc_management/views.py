@@ -49,7 +49,7 @@ def reset(request):
         player.rating = rating
         player.save()
 
-    return HttpResponse("Reset!")
+    return redirect('/clubs')
 
 # CRUD for Club
 class ClubForm(ModelForm):
@@ -374,6 +374,13 @@ def process_games(request, pk_club):
         game.json = differential
         # Mark the game as processed
         game.processed = True
+        # Update the batch number
+        if len(Batch.objects.all()) == 0:
+            # No batches, so set the game batch id to 1
+            game.batch_id = 1
+        else:
+            # Get the latest ID and add 1
+            game.batch_id = Batch.objects.latest('id').id + 1
         game.save()
 
     # Update the player ratings
