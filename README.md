@@ -56,8 +56,10 @@ To test a superuser account, please log in with the following credentials:
 1. First, create a virtual environment by doing the following:
 	a. https://virtualenv.pypa.io/en/latest/userguide/
 	b. Ensure that you are using a `virtualenv` with `Python 3.6 or greater`, as the app uses format strings which are only supported then.
-2. Navigate to the project directory root (`/`).
-3. Install all the requirements by running `pip install -r requirements.txt`
+2. Ensure that you are working on the virtual environment you just created. You can ensure you are doing so as there will be displayed the name of your virtual environment inside parentheses before the command prompt line. Ex. `(myvirtualenvname) $`
+3. Download the code and unzip it.
+5. Navigate to the project directory root (inside the `cc-django` folder using `cd cc-django`).
+6. Install all the requirements by running `pip install -r requirements.txt`
 
 #### Part 2 - Setting up Postgres
 You will need to setup a Postgres server running locally, create a database and user that has the permissions to edit the database (read and write to it).
