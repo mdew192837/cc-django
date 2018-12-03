@@ -218,7 +218,8 @@ def player_delete(request, pk_club, pk, template_name="cc_management/players/pla
 @login_required
 def club_players(request, pk_club, template_name="cc_management/players/club_players.html"):
     club = get_object_or_404(Club, pk=pk_club)
-    queryset = Player.objects.filter(club_id=pk_club).order_by('last_name')
+    # Assuming a higher classification is a higher rating
+    queryset = Player.objects.filter(club_id=pk_club).order_by('-classification', '-rating')
     filter = PlayerFilter(request.GET, queryset=queryset)
     table = PlayerTable(filter.qs)
     RequestConfig(request).configure(table)
