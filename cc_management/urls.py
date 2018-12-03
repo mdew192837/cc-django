@@ -47,5 +47,6 @@ urlpatterns += [
 
 # Begin Batches CRUD
 urlpatterns += [
-    path('clubs/<int:pk_club>/games/process', views.process_games, name='process_games')
+    path('clubs/<int:pk_club>/games/process', views.process_games, name='process_games'),
+    path('clubs/<int:pk_club>/batches', views.club_batches, name='club_batches')
 ]

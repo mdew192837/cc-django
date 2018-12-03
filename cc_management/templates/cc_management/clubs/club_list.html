@@ -24,6 +24,7 @@
                     {% if user.is_staff %}
                         <a href="{% url 'player_create' club.id %}" class="btn btn-success" role="button">Add Player</a>
                     {% endif %}
+                    <a href="{% url 'club_batches' club.id %}" class="btn btn-info" role="button">View Batches</a>
                     <!-- <a href="{% url 'club_view' club.id %}" class="btn btn-sm btn-info" role="button">View Club</a> -->
                     {% if user.is_staff %}
                         <a href="{% url 'club_edit' club.id %}" class="btn btn-sm btn-primary" role="button">Edit Club</a>

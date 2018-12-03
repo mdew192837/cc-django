@@ -406,3 +406,11 @@ def process_games(request, pk_club):
 
     # Redirect to the games page
     return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
+
+@login_required
+def club_batches(request, pk_club, template_name="cc_management/batches/club_batches.html"):
+    club = get_object_or_404(Club, pk=pk_club)
+    queryset = Batch.objects.filter(club=pk_club)
+    table = BatchTable(queryset)
+    RequestConfig(request).configure(table)
+    return render(request, 'cc_management/batches/club_batches.html', {'table': table, 'club': club, 'batches': queryset})

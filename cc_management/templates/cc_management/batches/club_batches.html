@@ -1,0 +1,16 @@
+{% extends "cc_management/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% load render_table from django_tables2 %}
+    <h1>Batches</h1>
+    {% if batches %}
+        {% render_table table 'django_tables2/bootstrap4.html' %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Currently no batches for {{ club.name }}!
+        </div>
+    {% endif %}
+    <a href="{% url 'club_games' club.id %}" class="btn btn-success" role="button">Back to Club Games!</a>
+    <a href="{% url 'club_list' %}" class="btn btn-info" role="button">Back to Clubs!</a>
+{% endblock content %}

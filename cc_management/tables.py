@@ -37,7 +37,7 @@ class GameTable(tables.Table):
         # Change weird field names
         sequence = ('club', 'white_player', 'black_player', 'result', 'batch_id')
         # Exclude stuff we don't want
-        exclude= ('played_on', 'updated_at', 'id')
+        exclude = ('played_on', 'updated_at', 'id')
 
 class GameFilter(django_filters.FilterSet):
     def __init__(self, *args, **kwargs):
@@ -57,3 +57,10 @@ class FilteredGameListView(SingleTableMixin, FilterView):
     template_name = 'cc_management/games/club_games.html'
 
     filterset_class = GameFilter
+
+class BatchTable(tables.Table):
+    class Meta:
+        model = Batch
+        template_name = 'django_tables2/bootstrap4.html'
+        sequence = ('club', 'processed_on', 'json')
+        exclude = ('updated_at', 'id')
