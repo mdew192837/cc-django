@@ -8,24 +8,34 @@
     <thead>
         <th scope="col">Classification Name</th>
         <th scope="col">Classification ID</th>
-        <th scope="col">Actions</th>
+        {% if user.is_staff %}
+            <th scope="col">Actions</th>
+        {% endif %}
     </thead>
     <tbody>
         {% for classification in classifications %}
             <tr>
                 <td>{{ classification.name }}</td>
                 <td>{{ classification.id }}</td>
-                <td>
-                    <a href="{% url 'classification_view' classification.id %}" class="btn btn-sm btn-info" role="button">View Classification</a>
-                    <a href="{% url 'classification_edit' classification.id %}" class="btn btn-sm btn-primary" role="button">Edit Classification</a>
-                    <a href="{% url 'classification_delete' classification.id %}" class="btn btn-sm btn-danger" role="button">Delete Classification</a>
-                </td>
+                {% if user.is_staff %}
+                    <td>
+                        <a href="{% url 'classification_view' classification.id %}" class="btn btn-sm btn-info" role="button">View Classification</a>
+                        <a href="{% url 'classification_edit' classification.id %}" class="btn btn-sm btn-primary" role="button">Edit Classification</a>
+                        <a href="{% url 'classification_delete' classification.id %}" class="btn btn-sm btn-danger" role="button">Delete Classification</a>
+                    </td>
+                {% endif %}
             </tr>
         {% endfor %}
     </tbody>
 </table>
 {% else %}
-<p class="lead">There are currently no classifications. Please create one!</p>
+    {% if user.is_staff %}
+        <p class="lead">There are currently no classifications. Please create one!</p>
+    {% else %}
+        <p class="lead">There are currently no classifications. Please wait until an administrator adds some.</p>
+    {% endif %}
 {% endif %}
-<a href="{% url 'classification_create' %}" class="btn btn-success" role="button">Create Classification!</a>
+{% if user.is_staff %}
+    <a href="{% url 'classification_create' %}" class="btn btn-success" role="button">Create Classification!</a>
+{% endif %}
 {% endblock content %}
