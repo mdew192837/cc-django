@@ -363,7 +363,7 @@ def process_games(request, pk_club):
             differential["white"]["differential"] = round(results[0]) - white_player.rating
         else:
             # Must be a draw
-            results = rate_1vs1(white_player.rating, black_player.rating)
+            results = rate_1vs1(white_player.rating, black_player.rating, drawn=True)
             differential["black"]["differential"] = round(results[1]) - black_player.rating
             differential["white"]["differential"] = round(results[0]) - white_player.rating
 
