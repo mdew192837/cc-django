@@ -378,13 +378,6 @@ def process_games(request, pk_club):
         game.json = differential
         # Mark the game as processed
         game.processed = True
-        # Update the batch number
-        if len(Batch.objects.all()) == 0:
-            # No batches, so set the game batch id to 1
-            game.batch_id = 1
-        else:
-            # Get the latest ID and add 1
-            game.batch_id = Batch.objects.latest('id').id + 1
         game.save()
 
     # Update the player ratings
@@ -403,6 +396,13 @@ def process_games(request, pk_club):
 
     # Create the batch
     batch = Batch.objects.create(club=get_object_or_404(Club, pk=pk_club), json=differentials)
+    batch_id = batch.id
+
+    # Update the batch number
+    for game_id in differentials["games"]:
+        game = Game.objects.get(id=game_id)
+        game.batch_id = batch_id
+        game.save()
 
     # Redirect to the games page
     return HttpResponseRedirect(reverse("club_games", args=(pk_club,)))
