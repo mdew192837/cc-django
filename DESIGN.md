@@ -49,6 +49,13 @@ Essentially, there are five main parts:
 * Game (`class Game`): Each club has many games. Thus, games are related to clubs using a `foreign key` which I call `club`. Furthermore, each player can have many games. Thus, games are also related to players using a `foreign key`. Note that there are two of these since there is both a `white` and `black` player (`white_player` and `black_player` are the IDs).
 * Batch (`class Batch`): When a staff member processes all the unprocessed games for a club, then a batch is created that contains a `JSON` object of information. More info about that can be found in the `README`. [Here](https://drive.google.com/open?id=1aKBJN15S8LLTZVdDvTDIrwAVXQq_ZmWe) is the screenshot with a sample batch for your convenience.
 
+## Other Considerations
+You might wonder why no users except those with `staff` or `superuser` status can edit a player's profile. Specifically, you may wonder why players themselves cannot edit their own profile.
+
+After talking with the chess coach about this, we decided to not allow players (`non-staff`) to have any edit access. This is because for this use case, most chess club players will be young. Thus, we decided that it was better for the staff to fill in this information even though it is more work on the part of the club manager.
+
+I also discuss this below in the section below titled `The Future` where I may eventually add user roles for players or their parents which is associated with a player. That account will then only be able to edit their own information.
+
 ## Coding Problems and Solutions
 I will next go through the problems I faced and document how I solved them.
 
@@ -108,6 +115,25 @@ Having timestamps is extremely useful for certain models. For example, it is ted
 Conveniently, Django has not just a `DateField` but also parameters such as `auto_now_add` which auto adds a timestamp **only** when the record is created, and `auto_now` which auto updates the timestamp anytime the record is updated.
 
 The documentation I referred to is [here](https://docs.djangoproject.com/en/2.1/ref/models/fields/#datetimefield).
+
+### Automatically Updating a Player's USCF Rating when a valid USCF ID is Provided
+Initially, I created the Player model so that administrators would have to manually enter not only a player's UCSF ID but also manually look up their UCSF Rating and update that.
+
+This is highly inconvenient and is not very time efficient. My chess coach found an old version of the UCSF Player lookup that I could query  (Use http://www.uschess.org/msa/thin.php? and add the relevant USCF ID).
+
+So I tested this manually with different valid IDs, inspected the `HTML`, and found what unique HTML element contained the value I wanted (`input[name=rating1]`).
+
+Once I had this information, I was ready to implement it. I needed to figure out two things:
+1. How to make a request using python in a Django app **and** parse the request response ideally using one library.
+2. How to initiate this request only after a player updates their profile.
+
+Please refer to `cc_managemeng/signals.py` for the code for this section.
+
+For the first, I knew of the Python `requests` library and `beautifulsoup4` library, but I didn't want to have to write a lot of code to connect them. I searched for an all-in-one library and found `requests_html`, which allows me to make a request and immediately parse it instead of writing any `bs4` code. Link [here](https://html.python-requests.org/).
+
+For the second one, I read the Django documentation to search for any hooks or signals that may be sent enough. Sure enough, I found that Django has signals that you can respond to. Furthermore, you can respond to only certain signals. In this case, I wanted to respond to the `post-save` signal sent by a `Player` object.  Link to Django documentation for signals [here](https://docs.djangoproject.com/en/2.1/topics/signals/).
+
+This can be implemented using the `@receiver` decorator. The rest is pretty straightforward, although I did need to implement a `try - finally` branch to prevent the profile from infinitely recursing and running each time the profile is saved.
 
 ## Other Problems
 
