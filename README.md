@@ -1,3 +1,4 @@
+
 # CCMS: A Chess Club Management System written in Django
 
 ## YouTube Video
@@ -16,13 +17,18 @@ CCMS is a website that allows for the maintenance and management of multiple che
 
 If given superuser access (for the founder of a chess club, for example), staff can go into the admin panel Django provides to perform some additional actions. These include:
 * Filtering by player fields
-* Creating more user accounts, editing passwords, etc.
+* Creating more user accounts.
+* Updating a user's password. Note that there is no way to view a user's current password, as passwords are not stored in a raw format but in hash format.
+* Changing account permissions. In the future, if one wants to outsource the chess club management system and include more staff members, one can click `Users` on the admin homepage (assuming one has superuser access), click on the user, and then check the `staff status` checkbox. One can also do the same thing to make a user a superuser.
+* View models in more detail. While this will not be much use right now, when this app is scaled up (see `DESIGN.md` for details), the following may be useful features:
+  * View batches chronologically (I have added a filter based on the `Processed On` date)
 * **ADD MORE INFORMATION HERE**
 
 ### Interesting Features
 * When a staff member updates the USCF ID of a player, the app will automatically update the player's UCSF Rating
 * Password reset. Using an SMTP server connected to the Django app, users can get a unique password reset link to the e-mail associated with their account.
 * Filtered Tables. All users can view players, games, and clubs in tables that have dynamic filters for selected fields. For example, one can filter the games table by white player, black player, or game result (white won, black won, draw). Furthermore, filters within each club are unique to that club. For example, if `club A` has 5 players and `club B` has 3 players, when a user visits `club A`'s table, the filter by player will only have the 5 players for club A. Similarly, whn a user visits `club B`'s table, the filter will only have the 3 players for club B.
+* Processing games. Please refer to the section `Processing Games` below.
 * **THINK OF MORE STUFF**
 
 ## Running the Project
@@ -32,10 +38,17 @@ If you do not want to go through setting up your own local postgres server, conn
 
 You can do so by navigating to https://ccapp-django.herokuapp.com/.
 
-To test a non-staff account for view purposes, please just create an account.
+To test a non-staff account for view purposes, you can use the account below or create your own account:
+* Username - `cs50`
+* Password - `cs50rocks!`
 
 To test a staff account, please log in with the following credentials:
-* INSERT CREDENTIALS HERE
+* Username - `cs50staff`
+* Password - `cs50rocks!`
+
+To test a superuser account, please log in with the following credentials:
+* Username - `cs50superuser`
+* Password - `cs50rocks!`
 
 ### Running Locally
 
@@ -43,8 +56,10 @@ To test a staff account, please log in with the following credentials:
 1. First, create a virtual environment by doing the following:
 	a. https://virtualenv.pypa.io/en/latest/userguide/
 	b. Ensure that you are using a `virtualenv` with `Python 3.6 or greater`, as the app uses format strings which are only supported then.
-2. Navigate to the project directory root (`/`).
-3. Install all the requirements by running `pip install -r requirements.txt`
+2. Ensure that you are working on the virtual environment you just created. You can ensure you are doing so as there will be displayed the name of your virtual environment inside parentheses before the command prompt line. Ex. `(myvirtualenvname) $`
+3. Download the code and unzip it.
+5. Navigate to the project directory root (inside the `cc-django` folder using `cd cc-django`).
+6. Install all the requirements by running `pip install -r requirements.txt`
 
 #### Part 2 - Setting up Postgres
 You will need to setup a Postgres server running locally, create a database and user that has the permissions to edit the database (read and write to it).
@@ -107,7 +122,7 @@ Most functionality will be the same. You can still view games, players, and club
 
 ### Additional Features for Staff
 Note that all desired actions can always be accessed via buttons in the table on the homepage.
-* Add a game to a specific club by the clicking the `Add Game` button. Note that you can only do this if you have two or more players in that club.
+* Add a game to a specific club by the clicking the `Add Game` button. Adding a game will automatically update the `games_played` number for both the white and black player. Note that you can only do this if you have two or more players in that club.
 * Add a player to a specific club by clicking the `Add Player` button. Required fields will be marked with an asterisk and you will receive a bootstrap hint via JS if you do not fill out a required field. If you disable javascript, there is also backend authentication. This applies to similar CRUD features.
   * Cool feature. If you add a player's USCF ID (mine is 13778174), then the app will automatically fetch the player's USCF rating once the profile is saved.
 * Edit a game. Note that you cannot edit the players for a game, only the result of the game. Furthermore, this will not reprocess ratings as of now, as I was unable to figure out stepping back in time at this point.
@@ -121,11 +136,11 @@ This is the key feature of this application. When games are created for a club, 
 Clicking this will do the following:
 * Go through all unprocessed games for the club. It will process all games according to the [ELO rating system](https://en.wikipedia.org/wiki/Elo_rating_system). This will:
   * Update ratings for all players (after it goes through all games. This is because players may have played multiple games and we want to process games based on the previous rating of the player. This is done by processing each game using the current player rating, calculating and storing the rating differential for that game, and then summing those at the end to update the player rating)
-  * Update the `games played` for each player
-  * Mark each game as processed
+  * Mark each game as processed. When it does this, it will also create a JSON object containing the `id`, `differential` (how much the rating changed), and the `rating_before` the game was processed for that player. [Here](https://drive.google.com/open?id=1QZ4oecvmbQ94qT86J4JPKH_r_OnYf25E) is what the JSON would look like.
 * It will also create a batch, which contains the `club name`, `processed_on date`, and a `JSON` object that has:
   * An array of the IDs of the games processed in that batch
-  * A players object which contains players by ID and more information (rating before, rating after, net rating differential) 
+  * A players object which contains players by ID and more information (rating before, rating after, net rating differential)
+  * [Here](https://drive.google.com/open?id=1aKBJN15S8LLTZVdDvTDIrwAVXQq_ZmWe) is what the JSON would look like
 
 ### Admin Site
 If the staff user is made a superuser (see here for information on how to do that), then the user can access the admin site via the `Admin` link (just `sampledomain.com/admin`) that will appear in the navbar in the upper right hand corner.
