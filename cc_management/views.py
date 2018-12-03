@@ -161,6 +161,10 @@ def classification_delete(request, pk, template_name="cc_management/classificati
 
 # CRUD for Players
 class PlayerForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PlayerForm, self).__init__(*args, **kwargs)
+        self.fields['club_id'].disabled = True
+
     class Meta:
         model = Player
         fields = ['first_name', 'middle_name', 'last_name', 'club_id', 'classification', 'grade', 'uscf_id', 'uscf_rating', 'rating', 'games_played', 'is_active']

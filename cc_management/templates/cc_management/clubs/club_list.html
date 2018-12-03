@@ -35,9 +35,17 @@
     </tbody>
 </table>
 {% else %}
-<div class="alert alert-info" role="alert">
-    Currently no clubs! Please check back soon once the chess club administrator has published changes.
-</div>
+    {% if user.is_staff %}
+        <div class="alert alert-info" role="alert">
+            Currently no clubs!
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Currently no clubs! Please check back soon once the chess club administrator has published changes.
+        </div>
+    {% endif %}
 {% endif %}
-<a href="{% url 'club_create' %}" class="btn btn-success" role="button">Create Club!</a>
+{% if user.is_staff %}
+    <a href="{% url 'club_create' %}" class="btn btn-success" role="button">Create Club!</a>
+{% endif %}
 {% endblock content %}
