@@ -2,7 +2,8 @@
 # CCMS: A Chess Club Management System written in Django
 
 ## YouTube Video
-- https://youtu.be/1NetT8cF4eI
+- https://youtu.be/PjbLXEglq_o
+  - Please turn the sound **way up** to hear clearly. :)
 
 ## Summary of Project
 
