@@ -5,7 +5,8 @@ To facilitate your testing and reviewing (since you may not be familiar with the
 Remember, to be able to perform `CRUD` like behaviors, you must be designated as `staff` or `superuser`. Thus, remember to login as either `cs50staff` or `cs50superuser.`
 
 You can view the video where I test **some**, but **not all** features described below.
-- https://youtu.be/1NetT8cF4eI
+- https://youtu.be/PjbLXEglq_o
+  - Please turn the sound **up** to hear clearly. :)
 
 ## 1. Create Classifications
 
