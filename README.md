@@ -34,6 +34,8 @@ If given superuser access (for the founder of a chess club, for example), staff 
 
 ## Running the Project
 
+**Please note that the text below guides you through the setup process. If you want a guide on how to tests all the features described, please refer to the `TESTING.md` file I have included**
+
 ### Testing on Heroku
 If you do not want to go through setting up your own local postgres server, connecting your own SMTP mailserver and account credentials, or adding a .env file, it is strongly recommended to test the app with Heroku.
 
